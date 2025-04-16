@@ -1,7 +1,7 @@
 <div align="center">
 
 # A Minimalist Approach to LLM Reasoning: from Rejection Sampling to Reinforce
-[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/) [![Github](https://img.shields.io/badge/RAFT++-000000?style=for-the-badge&logo=github&logoColor=000&logoColor=white)](https://github.com/RLHFlow/Minimal-RL)
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/pdf/2504.11343) [![Github](https://img.shields.io/badge/RAFT++-000000?style=for-the-badge&logo=github&logoColor=000&logoColor=white)](https://github.com/RLHFlow/Minimal-RL)
 </div>
 
 ## Table of Contents
