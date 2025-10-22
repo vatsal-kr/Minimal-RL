@@ -1,0 +1,6 @@
+**/__pycache__
+**/.ipynb_checkpoints
+**/logs
+**/outputs
+**/data
+**/verl.egg-info

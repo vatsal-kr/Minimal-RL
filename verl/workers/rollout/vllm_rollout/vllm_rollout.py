@@ -101,7 +101,7 @@ class vLLMRollout(BaseRollout):
         self.inference_engine = LLM(
             actor_module,
             tokenizer=tokenizer,
-            model_hf_config=model_hf_config,
+            model_config=model_hf_config,
             tensor_parallel_size=tensor_parallel_size,
             dtype=config.dtype,
             enforce_eager=config.enforce_eager,

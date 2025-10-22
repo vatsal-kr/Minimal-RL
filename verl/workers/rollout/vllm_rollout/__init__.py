@@ -41,10 +41,10 @@ else:
     package_version = get_version(package_name)
 ###
 
-if package_version <= '0.6.3':
-    vllm_mode = 'customized'
-    from .vllm_rollout import vLLMRollout
-    from .fire_vllm_rollout import FIREvLLMRollout
-else:
-    vllm_mode = 'spmd'
-    from .vllm_rollout_spmd import vLLMRollout
+# if package_version <= '0.6.3':
+#     vllm_mode = 'customized'
+#     from .vllm_rollout import vLLMRollout
+#     from .fire_vllm_rollout import FIREvLLMRollout
+# else:
+vllm_mode = 'spmd'
+from .vllm_rollout_spmd import vLLMRollout
