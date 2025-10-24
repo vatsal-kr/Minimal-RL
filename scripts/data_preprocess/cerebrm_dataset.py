@@ -25,7 +25,7 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, trust_remote_code=True)
 
     train_dataset = dataset['train']
-
+    test_dataset = dataset['test_weak_easy']
     LIST_REWARD_PROMPT = """You are an expert judge of coding problems. Given a coding problem and multiple candidate solutions, your task is to evaluate the correctness of each solution based on the problem description. Your evaluation should solely be based on the functional correctness of the codes. It is guaranteed that one and only one of the candidates is completely correct. Here is the coding question followed by the candidate solutions:
 
 [QUESTION]
@@ -64,7 +64,8 @@ You are to indicate your choice of candidate only by responding with one of the 
                 "reward_model": reward_model,
                 "extra_info": {
                     'split': split,
-                    'index': idx
+                    'index': idx,
+                    'num_candidates': example['num_candidates'],
                 }
             }
             return data
@@ -72,12 +73,15 @@ You are to indicate your choice of candidate only by responding with one of the 
         return process_fn
         
     print(f"Train dataset size: {len(train_dataset)}")
+    print(f"Test dataset size: {len(test_dataset)}")
 
     train_dataset = train_dataset.map(function=make_map_fn('train'), with_indices=True, remove_columns=train_dataset.column_names)
+    test_dataset = test_dataset.map(function=make_map_fn('test'), with_indices=True, remove_columns=test_dataset.column_names)
     print(train_dataset[0])
     local_dir = args.local_dir
     hdfs_dir = args.hdfs_dir
     train_dataset.to_parquet(os.path.join(local_dir, 'train.parquet'))
+    test_dataset.to_parquet(os.path.join(local_dir, 'test.parquet'))
 
     if hdfs_dir is not None:
         makedirs(hdfs_dir)
