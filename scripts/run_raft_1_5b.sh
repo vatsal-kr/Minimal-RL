@@ -41,7 +41,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     actor_rollout_ref.actor.entropy_coef=0 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
     actor_rollout_ref.actor.policy_loss=$policy_loss \
-    actor_rollout_ref.actor.ppo_max_token_len_per_gpu=40960 \
+    actor_rollout_ref.actor.ppo_max_token_len_per_gpu=35840 \
     actor_rollout_ref.rollout.dtype="bfloat16" \
     actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
     actor_rollout_ref.rollout.name=vllm \
@@ -50,7 +50,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     actor_rollout_ref.rollout.gpu_memory_utilization=0.6 \
     actor_rollout_ref.rollout.n=$n \
     actor_rollout_ref.rollout.max_num_batched_tokens=61440 \
-    actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=40960 \
+    actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=35840 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     algorithm.kl_ctrl.kl_coef=0 \
     reward_model.reward_manager=naive \
