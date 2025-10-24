@@ -3,7 +3,7 @@ set -x
 data=cerebrm_dataset
 project_name=raft
 algorithm=raft
-size=${1:-7B}
+size=${1:-14B}
 model=Deepseek-R1-Distill-Qwen-$size
 model_name_or_path=deepseek-ai/$model
 policy_loss=vanilla # vanilla, plusplus (importance sample + clipping)
