@@ -51,5 +51,4 @@ def compute_score(solution_str, ground_truth, extra_info=None) -> float:
     answer = solution_str.split("</think>")[-1].strip()
     answer = extract_boxed_contents_list(answer)
     correctness_reward = 1.0 if answer == ground_truth else 0.0
-    format_reward = list_format_reward(f"<think>\n{solution_str}", extra_info["num_candidates"])
-    return correctness_reward + format_reward
+    return correctness_reward

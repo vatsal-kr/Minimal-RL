@@ -121,15 +121,8 @@ def compute_raft_outcome_advantage(token_level_rewards: torch.Tensor, response_m
     """
     scores = token_level_rewards.sum(dim=-1)
     with torch.no_grad():
-        max_val = scores.max()
-
-        # If max is -1, zero out everything
-        if max_val == -1:
-            scores = torch.zeros_like(scores)
-        else:
-            # Keep only the max scores, zero out the rest
-            scores = torch.where(scores == max_val, scores, torch.zeros_like(scores))
-    scores = scores.unsqueeze(-1) * response_mask
+        scores = scores.unsqueeze(-1) * response_mask
+        scores[scores != 1] = 0.0
     return scores, scores
 
 
