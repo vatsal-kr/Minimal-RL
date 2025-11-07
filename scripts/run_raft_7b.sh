@@ -62,7 +62,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     trainer.val_before_train=False \
     trainer.nnodes=1 \
     trainer.save_freq=78 \
-    trainer.default_local_dir=checkpoints/${experiment_name} \
+    trainer.default_local_dir=$WORK/raft/${experiment_name} \
     trainer.test_freq=78 \
     trainer.total_epochs=1 2>&1 | tee logs/${experiment_name}.log
 

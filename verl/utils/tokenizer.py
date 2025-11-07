@@ -13,6 +13,7 @@
 # limitations under the License.
 """Utils for tokenization."""
 
+import os
 import warnings
 
 __all__ = ["hf_tokenizer", "hf_processor"]
@@ -33,7 +34,7 @@ def set_pad_token_id(tokenizer):
         warnings.warn(f"tokenizer.pad_token is None. Now set to {tokenizer.eos_token}")
 
 
-def hf_tokenizer(name_or_path, correct_pad_token=True, correct_gemma2=True, correct_dsqwen=True, **kwargs):
+def hf_tokenizer(name_or_path, correct_pad_token=True, correct_gemma2=True, correct_dsqwen=True, chat_template_path=None, **kwargs):
     """Create a huggingface pretrained tokenizer which correctness handles eos and pad tokens.
 
     Args:
@@ -62,6 +63,12 @@ def hf_tokenizer(name_or_path, correct_pad_token=True, correct_gemma2=True, corr
     tokenizer = AutoTokenizer.from_pretrained(name_or_path, **kwargs)
     if correct_pad_token:
         set_pad_token_id(tokenizer)
+    if chat_template_path is not None:
+        if os.path.isfile(chat_template_path) and chat_template_path.endswith((".jinja", ".j2")):
+            with open(chat_template_path, encoding="utf-8") as chat_template_file:
+                tokenizer.chat_template = chat_template_file.read()
+        else:
+            raise FileNotFoundError(f"Chat template file '{chat_template_path}' not found.")
     return tokenizer
 
 

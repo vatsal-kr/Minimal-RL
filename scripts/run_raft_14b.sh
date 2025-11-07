@@ -9,7 +9,7 @@ model_name_or_path=deepseek-ai/$model
 policy_loss=vanilla # vanilla, plusplus (importance sample + clipping)
 n=16
 experiment_name=${model}-${algorithm}-${policy_loss}-${data}-n${n}
-GPUS=(0 1 2 3 4 5 6 7)
+GPUS=(0 1 2 3)\
 my_world_size=${#GPUS[@]}
 
 math_train_path=./data/$data/train.parquet
@@ -29,6 +29,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     data.max_response_length=16384 \
     data.filter_overlong_prompts=False \
     actor_rollout_ref.model.path=$model_name_or_path \
+    actor_rollout_ref.model.chat_template_path=./verl/utils/dsqwen_chat_template.jinja \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
@@ -62,7 +63,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     trainer.val_before_train=False \
     trainer.nnodes=1 \
     trainer.save_freq=78 \
-    trainer.default_local_dir=checkpoints/${experiment_name} \
+    trainer.default_local_dir=$WORK/raft/${experiment_name} \
     trainer.test_freq=78 \
     trainer.total_epochs=1 2>&1 | tee logs/${experiment_name}.log
 
