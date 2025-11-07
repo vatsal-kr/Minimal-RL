@@ -9,7 +9,7 @@ model_name_or_path=deepseek-ai/$model
 policy_loss=vanilla # vanilla, plusplus (importance sample + clipping)
 n=16
 experiment_name=${model}-${algorithm}-${policy_loss}-${data}-n${n}
-GPUS=(0 1 2 3)\
+GPUS=(0 1 2 3)
 my_world_size=${#GPUS[@]}
 
 math_train_path=./data/$data/train.parquet

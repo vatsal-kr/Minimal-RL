@@ -29,6 +29,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     data.max_response_length=16384 \
     data.filter_overlong_prompts=False \
     actor_rollout_ref.model.path=$model_name_or_path \
+    actor_rollout_ref.model.chat_template_path=./verl/utils/dsqwen_chat_template.jinja \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
