@@ -22,6 +22,8 @@ def concat_dict_to_str(dict: Dict, step):
     output = [f'step:{step}']
     for k, v in dict.items():
         if isinstance(v, numbers.Number):
+            if k=='actor/lr':
+                output.append(f'{k}:{v}')
             output.append(f'{k}:{v:.3f}')
     output_str = ' - '.join(output)
     return output_str
