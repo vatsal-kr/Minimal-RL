@@ -3,10 +3,10 @@ set -x
 data=cerebrm_dataset
 project_name=raft
 algorithm=raft
-size=${1:-7B}
+size=${1:-14B}
 model=Deepseek-R1-Distill-Qwen-$size
 model_name_or_path=deepseek-ai/$model
-policy_loss=vanilla # vanilla, plusplus (importance sample + clipping)
+policy_loss=plusplus # vanilla, plusplus (importance sample + clipping)
 n=16
 experiment_name=${model}-${algorithm}-${policy_loss}-${data}-n${n}
 GPUS=(0 1 2 3)
@@ -40,8 +40,8 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     actor_rollout_ref.actor.fsdp_config.param_offload=False \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=True \
     +actor_rollout_ref.actor.fsdp_config.model_dtype='bfloat16' \
-    actor_rollout_ref.actor.use_kl_loss=False \
-    actor_rollout_ref.actor.kl_loss_coef=0 \
+    actor_rollout_ref.actor.use_kl_loss=True \
+    actor_rollout_ref.actor.kl_loss_coef=0.001 \
     actor_rollout_ref.actor.entropy_coeff=0 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
     actor_rollout_ref.actor.policy_loss=$policy_loss \
@@ -56,7 +56,7 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     actor_rollout_ref.rollout.max_num_batched_tokens=40960 \
     actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=20480 \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
-    algorithm.kl_ctrl.kl_coef=0 \
+    algorithm.kl_ctrl.kl_coef=0.001 \
     reward_model.reward_manager=naive \
     trainer.critic_warmup=0 \
     trainer.logger=['console','wandb'] \

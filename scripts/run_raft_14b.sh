@@ -30,13 +30,16 @@ PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=$(IFS=,; echo "${GPUS[*]}") python3 -m v
     data.filter_overlong_prompts=False \
     actor_rollout_ref.model.path=$model_name_or_path \
     actor_rollout_ref.model.chat_template_path=./verl/utils/dsqwen_chat_template.jinja \
-    actor_rollout_ref.actor.optim.lr=1e-6 \
+    actor_rollout_ref.actor.optim.lr=2e-6 \
+    actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.05 \
+    actor_rollout_ref.actor.optim.warmup_style='constant' \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.actor.ppo_mini_batch_size=64 \
     actor_rollout_ref.actor.use_dynamic_bsz=True \
     actor_rollout_ref.actor.fsdp_config.param_offload=False \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=True \
+    +actor_rollout_ref.actor.fsdp_config.model_dtype='bfloat16' \
     actor_rollout_ref.actor.use_kl_loss=False \
     actor_rollout_ref.actor.kl_loss_coef=0 \
     actor_rollout_ref.actor.entropy_coeff=0 \
