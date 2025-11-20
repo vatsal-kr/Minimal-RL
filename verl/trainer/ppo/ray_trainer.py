@@ -231,7 +231,8 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
     elif adv_estimator == AdvantageEstimator.RAFT:
         advantages, returns = core_algos.compute_raft_outcome_advantage(
             token_level_rewards=data.batch['token_level_rewards'],
-            response_mask=data.batch['response_mask'])
+            response_mask=data.batch['response_mask'],
+        )
         data.batch['advantages'] = advantages
         data.batch['returns'] = returns
     elif adv_estimator == AdvantageEstimator.REINFORCE_REJ:
@@ -927,12 +928,12 @@ class RayPPOTrainer(object):
                         # we combine with rule-based rm
                         reward_extra_infos_dict: dict[str, list]
                         try:
-                            reward_result = self.reward_fn(batch, return_dict=True)
+                            reward_result = self.reward_fn(batch, group_size=self.config.actor_rollout_ref.rollout.n, raft_K=self.config.algorithm.raft_K, return_dict=True)
                             reward_tensor = reward_result['reward_tensor']
                             reward_extra_infos_dict = reward_result['reward_extra_info']
                         except Exception as e:
                             print(f'Error in reward_fn: {e}')
-                            reward_tensor = self.reward_fn(batch)
+                            reward_tensor = self.reward_fn(batch, group_size=self.config.actor_rollout_ref.rollout.n, raft_K=self.config.algorithm.raft_K,)
                             reward_extra_infos_dict = {}
 
                         batch.batch['token_level_scores'] = reward_tensor

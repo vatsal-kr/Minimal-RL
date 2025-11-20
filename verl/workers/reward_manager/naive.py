@@ -28,9 +28,8 @@ class NaiveRewardManager:
         self.compute_score = compute_score or _default_compute_score
         self.reward_fn_key = reward_fn_key
 
-    def __call__(self, data: DataProto, return_dict=False):
+    def __call__(self, data: DataProto,  group_size, raft_K=None, return_dict=False):
         """We will expand this function gradually based on the available datasets"""
-
         # If there is rm score, we directly return rm score. Otherwise, we compute via rm_score_fn
         if 'rm_scores' in data.batch.keys():
             if return_dict:
@@ -42,17 +41,20 @@ class NaiveRewardManager:
         reward_extra_info = defaultdict(list)
 
         already_print_data_sources = {}
-
+        num_correct_in_group = 0
         for i in range(len(data)):
+            if i%group_size==0:
+                # reset the group correctness count if a new group is found
+                num_correct_in_group = 0
             data_item = data[i]  # DataProtoItem
-
+            
             prompt_ids = data_item.batch['prompts']
 
             prompt_length = prompt_ids.shape[-1]
 
             valid_prompt_length = data_item.batch['attention_mask'][:prompt_length].sum()
             valid_prompt_ids = prompt_ids[-valid_prompt_length:]
-
+            
             response_ids = data_item.batch['responses']
             valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()
             valid_response_ids = response_ids[:valid_response_length]
@@ -67,13 +69,15 @@ class NaiveRewardManager:
 
             extra_info = data_item.non_tensor_batch.get('extra_info', None)
 
-            score = self.compute_score(
-                data_source=data_source,
-                solution_str=response_str,
-                ground_truth=ground_truth,
-                extra_info=extra_info,
-            )
-
+            if raft_K and num_correct_in_group >= raft_K:
+                score = 0
+            else:
+                score = self.compute_score(
+                    data_source=data_source,
+                    solution_str=response_str,
+                    ground_truth=ground_truth,
+                    extra_info=extra_info,
+                )
             if isinstance(score, dict):
                 reward = score["score"]
                 # Store the information including original reward
@@ -81,7 +85,8 @@ class NaiveRewardManager:
                     reward_extra_info[key].append(value)
             else:
                 reward = score
-
+            if reward==1.0:
+                num_correct_in_group+=1
             reward_tensor[i, valid_response_length - 1] = reward
 
             if data_source not in already_print_data_sources:
